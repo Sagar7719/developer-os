@@ -1,0 +1,23 @@
+{
+  "name": "developer-os-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Developer OS - Production-Grade SaaS Monorepo (Sagar.dev)",
+  "scripts": {
+    "dev": "pnpm --parallel --filter ./apps/* dev",
+    "build": "pnpm --recursive run build",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
+    "prettier": "^3.2.5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
