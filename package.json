@@ -1,9 +1,9 @@
 {
-  "name": "developer-os-monorepo",
-  "version": "1.0.0",
+  "name": "developer-os",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Developer OS - Production-Grade SaaS Monorepo (Sagar.dev)",
+  "description": "Developer OS — A Production-Grade Software Engineer Portfolio and Personal CMS by Sagar.dev.",
   "scripts": {
     "dev": "pnpm --parallel --filter ./apps/* dev",
     "build": "pnpm --recursive run build",
