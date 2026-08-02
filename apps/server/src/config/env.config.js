@@ -6,7 +6,15 @@ dotenv.config();
  * Validates required environment variables on process boot natively.
  */
 function validateEnv() {
-  const requiredKeys = ['NODE_ENV', 'PORT', 'MONGO_URI'];
+  const requiredKeys = [
+    'NODE_ENV',
+    'PORT',
+    'MONGO_URI',
+    'JWT_ACCESS_SECRET',
+    'JWT_ACCESS_EXPIRES_IN',
+    'JWT_REFRESH_SECRET',
+    'JWT_REFRESH_EXPIRES_IN',
+  ];
   const missingKeys = requiredKeys.filter((key) => !process.env[key]);
 
   if (missingKeys.length > 0) {
@@ -27,8 +35,12 @@ export const config = Object.freeze({
   clientOrigin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
   mongoUri: process.env.MONGO_URI,
   logLevel: process.env.LOG_LEVEL || 'info',
-  rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10), // 15 mins default
-  rateLimitMax: parseInt(process.env.RATE_LIMIT_MAX || '100', 10), // 100 requests per window
+  rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10),
+  rateLimitMax: parseInt(process.env.RATE_LIMIT_MAX || '100', 10),
+  jwtAccessSecret: process.env.JWT_ACCESS_SECRET,
+  jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
+  jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
 });
 
 export default config;

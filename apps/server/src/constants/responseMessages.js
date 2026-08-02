@@ -1,6 +1,6 @@
 /**
  * Application-wide generic API response messages.
- * Note: Domain-specific business messages must NOT be placed here.
+ * Note: Domain-specific business entity messages must NOT be placed here.
  */
 export const ResponseMessages = Object.freeze({
   SUCCESS: 'Operation completed successfully.',
@@ -12,6 +12,17 @@ export const ResponseMessages = Object.freeze({
   DATABASE_CONNECTED: 'Database connection established successfully.',
   DATABASE_DISCONNECTED: 'Database disconnected.',
   DATABASE_ERROR: 'Database operation failed.',
+
+  // Generic Identity & Auth Platform Messages
+  REGISTER_SUCCESS: 'User registered successfully.',
+  LOGIN_SUCCESS: 'Authentication successful.',
+  LOGOUT_SUCCESS: 'Logged out successfully.',
+  TOKEN_REFRESHED: 'Access token refreshed successfully.',
+  UNAUTHORIZED: 'Authentication required. Please provide a valid token.',
+  FORBIDDEN: 'Access denied. You do not have permission to access this resource.',
+  INVALID_CREDENTIALS: 'Invalid email or password.',
+  EMAIL_ALREADY_EXISTS: 'An account with this email address already exists.',
+  INVALID_TOKEN: 'Invalid or expired token.',
 });
 
 export default ResponseMessages;

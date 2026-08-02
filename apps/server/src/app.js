@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import { helmetMiddleware, corsMiddleware, rateLimiterMiddleware } from './middleware/security.middleware.js';
 import notFoundHandler from './middleware/notFound.middleware.js';
 import globalErrorHandler from './middleware/errorHandler.middleware.js';
@@ -11,7 +12,8 @@ app.use(helmetMiddleware);
 app.use(corsMiddleware);
 app.use(rateLimiterMiddleware);
 
-// Body Parsing Middlewares
+// Cookie & Body Parsing Middlewares
+app.use(cookieParser());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
