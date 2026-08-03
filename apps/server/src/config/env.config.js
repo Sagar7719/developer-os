@@ -6,7 +6,9 @@ dotenv.config();
  * Validates required environment variables on process boot natively.
  */
 function validateEnv() {
-  const requiredKeys = [
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  const baseRequiredKeys = [
     'NODE_ENV',
     'PORT',
     'MONGO_URI',
@@ -15,12 +17,22 @@ function validateEnv() {
     'JWT_REFRESH_SECRET',
     'JWT_REFRESH_EXPIRES_IN',
   ];
-  const missingKeys = requiredKeys.filter((key) => !process.env[key]);
+
+  const productionOnlyKeys = [
+    'CLIENT_ORIGIN',
+    'CONTACT_RECEIVER_EMAIL',
+  ];
+
+  const requiredKeys = isProduction
+    ? [...baseRequiredKeys, ...productionOnlyKeys]
+    : baseRequiredKeys;
+
+  const missingKeys = requiredKeys.filter((key) => !process.env[key] || !process.env[key].trim());
 
   if (missingKeys.length > 0) {
-    throw new Error(
-      `[Developer OS Config Error] Missing required environment variables: ${missingKeys.join(', ')}. Check your .env file.`
-    );
+    const errorMsg = `[Developer OS Config Error] Missing required environment variables (${process.env.NODE_ENV || 'development'} mode): ${missingKeys.join(', ')}. Check your .env file or environment settings.`;
+    console.error(errorMsg);
+    throw new Error(errorMsg);
   }
 }
 
@@ -41,6 +53,8 @@ export const config = Object.freeze({
   jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
   jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
+  contactReceiverEmail: process.env.CONTACT_RECEIVER_EMAIL || 'admin@developer-os.dev',
+  trustProxy: process.env.TRUST_PROXY === '1' || process.env.TRUST_PROXY === 'true',
 });
 
 export default config;
