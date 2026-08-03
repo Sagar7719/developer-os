@@ -10,6 +10,20 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+          if (id.includes('/pages/admin/') || id.includes('/components/admin/')) {
+            return 'admin';
+          }
+        },
+      },
+    },
+  },
   server: {
     port: 5173,
     host: true,

@@ -1,20 +1,19 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchProjects } from '../../api/project.api.js';
-import { fetchSkills } from '../../api/skill.api.js';
-import { fetchExperiences } from '../../api/experience.api.js';
+import { fetchDashboardStats } from '../../api/dashboard.api.js';
 import { Link } from 'react-router-dom';
 import { FiFolder, FiCpu, FiBriefcase, FiArrowRight, FiShield } from 'react-icons/fi';
 
 export function AdminDashboard() {
-  const { data: projects } = useQuery({ queryKey: ['projects'], queryFn: () => fetchProjects() });
-  const { data: skills } = useQuery({ queryKey: ['skills'], queryFn: () => fetchSkills() });
-  const { data: experiences } = useQuery({ queryKey: ['experience'], queryFn: () => fetchExperiences() });
+  const { data: dashboardStats } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: () => fetchDashboardStats(),
+  });
 
   const stats = [
     {
       title: 'Total Projects',
-      count: projects ? projects.length : 0,
+      count: dashboardStats?.totalProjects ?? 0,
       path: '/admin/projects',
       icon: FiFolder,
       color: 'text-purple-400',
@@ -22,7 +21,7 @@ export function AdminDashboard() {
     },
     {
       title: 'Skills Registered',
-      count: skills ? skills.length : 0,
+      count: dashboardStats?.totalSkills ?? 0,
       path: '/admin/skills',
       icon: FiCpu,
       color: 'text-cyan-400',
@@ -30,7 +29,7 @@ export function AdminDashboard() {
     },
     {
       title: 'Career Milestones',
-      count: experiences ? experiences.length : 0,
+      count: dashboardStats?.totalExperiences ?? 0,
       path: '/admin/experience',
       icon: FiBriefcase,
       color: 'text-emerald-400',

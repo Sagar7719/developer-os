@@ -1,10 +1,15 @@
 import React from 'react';
+import { PageMetadata } from '../components/PageMetadata.jsx';
 import { ProjectGrid } from '../features/projects/ProjectGrid.jsx';
 import { FiFolder } from 'react-icons/fi';
 
 export function ProjectsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8 pb-20">
+      <PageMetadata
+        title="Projects Portfolio & Case Studies"
+        description="Explore complete production software projects built with modern web frameworks, clean architecture, and scalable design patterns."
+      />
       {/* Header */}
       <div className="border-b border-slate-800/80 pb-6 space-y-2">
         <div className="inline-flex items-center gap-2 text-xs font-mono text-purple-400 font-semibold uppercase tracking-wider">
@@ -26,3 +31,4 @@ export function ProjectsPage() {
 }
 
 export default ProjectsPage;
+

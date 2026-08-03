@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Allow: /projects
+Allow: /contact
+Disallow: /admin/
+Disallow: /admin/*
+
+Sitemap: https://developer-os.dev/sitemap.xml

@@ -22,6 +22,7 @@ export function Footer() {
             href="https://github.com/sagardev/developer-os"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Visit Developer OS GitHub Repository"
             className="flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
           >
             <FiGithub className="w-4 h-4" />

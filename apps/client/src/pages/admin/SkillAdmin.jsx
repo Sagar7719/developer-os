@@ -21,6 +21,7 @@ export function SkillAdmin() {
     mutationFn: createSkillApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['skills'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setIsFormOpen(false);
     },
   });
@@ -29,6 +30,7 @@ export function SkillAdmin() {
     mutationFn: updateSkillApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['skills'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setIsFormOpen(false);
       setSelectedSkill(null);
     },
@@ -38,6 +40,7 @@ export function SkillAdmin() {
     mutationFn: deleteSkillApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['skills'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setDeleteTarget(null);
     },
   });

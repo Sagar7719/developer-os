@@ -71,8 +71,8 @@ export function ExperienceFormModal({ isOpen, initialData, onSubmit, onClose, is
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs overflow-y-auto">
-      <div className="bg-[#1e293b] border border-slate-800 rounded-2xl p-6 max-w-xl w-full my-8 space-y-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm">
+      <div className="relative mx-auto my-10 w-full max-w-2xl rounded-2xl border border-slate-800 bg-[#1e293b] p-6 shadow-2xl">
         <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
           <h3 className="text-lg font-bold text-white">
             {initialData ? 'Edit Experience Entry' : 'Create New Experience Entry'}

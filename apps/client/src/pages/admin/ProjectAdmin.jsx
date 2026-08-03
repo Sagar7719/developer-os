@@ -1,18 +1,39 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchProjects, createProjectApi, updateProjectApi, deleteProjectApi } from '../../api/project.api.js';
+import {
+  fetchProjects,
+  createProjectApi,
+  updateProjectApi,
+  deleteProjectApi,
+} from '../../api/project.api.js';
 import { ProjectFormModal } from '../../components/admin/ProjectFormModal.jsx';
 import { ConfirmDeleteModal } from '../../components/admin/ConfirmDeleteModal.jsx';
-import { LoadingSpinner, ErrorMessage, EmptyState } from '../../components/States.jsx';
-import { FiPlus, FiEdit2, FiTrash2, FiFolder, FiExternalLink, FiGithub } from 'react-icons/fi';
+import {
+  LoadingSpinner,
+  ErrorMessage,
+  EmptyState,
+} from '../../components/States.jsx';
+import {
+  FiPlus,
+  FiEdit2,
+  FiTrash2,
+  FiFolder,
+} from 'react-icons/fi';
 
 export function ProjectAdmin() {
   const queryClient = useQueryClient();
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const { data: projects, isLoading, isError, error, refetch } = useQuery({
+  const {
+    data: projects,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ['projects', { isPublished: undefined }],
     queryFn: () => fetchProjects({ isPublished: undefined }),
   });
@@ -21,6 +42,7 @@ export function ProjectAdmin() {
     mutationFn: createProjectApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setIsFormOpen(false);
     },
   });
@@ -29,6 +51,7 @@ export function ProjectAdmin() {
     mutationFn: updateProjectApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setIsFormOpen(false);
       setSelectedProject(null);
     },
@@ -38,6 +61,7 @@ export function ProjectAdmin() {
     mutationFn: deleteProjectApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setDeleteTarget(null);
     },
   });
@@ -54,7 +78,10 @@ export function ProjectAdmin() {
 
   const handleFormSubmit = (formData) => {
     if (selectedProject) {
-      updateMutation.mutate({ id: selectedProject.id, data: formData });
+      updateMutation.mutate({
+        id: selectedProject.id,
+        data: formData,
+      });
     } else {
       createMutation.mutate(formData);
     }
@@ -75,7 +102,10 @@ export function ProjectAdmin() {
             <FiFolder className="w-3.5 h-3.5" />
             Project Records
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight mt-1">Project CMS Management</h1>
+
+          <h1 className="text-2xl font-bold text-white tracking-tight mt-1">
+            Project CMS Management
+          </h1>
         </div>
 
         <button
@@ -87,10 +117,12 @@ export function ProjectAdmin() {
         </button>
       </div>
 
-      {/* Loading State */}
-      {isLoading && <LoadingSpinner text="Loading projects..." />}
+      {/* Loading */}
+      {isLoading && (
+        <LoadingSpinner text="Loading projects..." />
+      )}
 
-      {/* Error State */}
+      {/* Error */}
       {isError && (
         <ErrorMessage
           title="Failed to load project records"
@@ -99,106 +131,147 @@ export function ProjectAdmin() {
         />
       )}
 
-      {/* Empty State */}
-      {!isLoading && !isError && (!projects || projects.length === 0) && (
-        <EmptyState
-          title="No projects found"
-          message="Click 'Add New Project' to create your first portfolio entry."
-        />
-      )}
+      {/* Empty */}
+      {!isLoading &&
+        !isError &&
+        (!projects || projects.length === 0) && (
+          <EmptyState
+            title="No projects found"
+            message="Click 'Add New Project' to create your first portfolio entry."
+          />
+        )}
 
-      {/* Projects Table */}
-      {!isLoading && !isError && projects && projects.length > 0 && (
-        <div className="bg-[#1e293b]/40 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-800 bg-slate-900/60 text-[11px] font-mono text-slate-400 uppercase tracking-wider">
-                  <th className="py-3.5 px-4">Title & Slug</th>
-                  <th className="py-3.5 px-4">Category</th>
-                  <th className="py-3.5 px-4">Tech Stack</th>
-                  <th className="py-3.5 px-4 text-center">Featured</th>
-                  <th className="py-3.5 px-4 text-center">Status</th>
-                  <th className="py-3.5 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60 text-xs">
-                {projects.map((project) => (
-                  <tr key={project.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="py-3.5 px-4">
-                      <div className="font-semibold text-slate-100">{project.title}</div>
-                      <div className="text-[10px] font-mono text-purple-400">/{project.slug}</div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700 uppercase">
-                        {project.category}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <div className="flex flex-wrap gap-1 max-w-xs">
-                        {project.techStack?.slice(0, 3).map((t, idx) => (
-                          <span key={idx} className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-900 text-slate-400">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-4 text-center">
-                      {project.featured ? (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 font-semibold">
-                          Featured
-                        </span>
-                      ) : (
-                        <span className="text-slate-600 font-mono text-[10px]">—</span>
-                      )}
-                    </td>
-                    <td className="py-3.5 px-4 text-center">
-                      {project.isPublished ? (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                          Published
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                          Draft
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleEdit(project)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                          title="Edit"
-                        >
-                          <FiEdit2 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => setDeleteTarget(project)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-950/20 transition-colors"
-                          title="Delete"
-                        >
-                          <FiTrash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
+      {/* Table */}
+      {!isLoading &&
+        !isError &&
+        projects &&
+        projects.length > 0 && (
+          <div className="bg-[#1e293b]/40 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-800 bg-slate-900/60 text-[11px] font-mono text-slate-400 uppercase tracking-wider">
+                    <th className="py-3.5 px-4">Title &amp; Slug</th>
+                    <th className="py-3.5 px-4">Category</th>
+                    <th className="py-3.5 px-4">Tech Stack</th>
+                    <th className="py-3.5 px-4 text-center">Featured</th>
+                    <th className="py-3.5 px-4 text-center">Status</th>
+                    <th className="py-3.5 px-4 text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+                </thead>
 
-      {/* Form Modal */}
+                <tbody className="divide-y divide-slate-800/60 text-xs">
+                  {projects.map((project) => (
+                    <tr
+                      key={project.id}
+                      className="hover:bg-slate-800/30 transition-colors"
+                    >
+                      <td className="py-3.5 px-4">
+                        <div className="font-semibold text-slate-100">
+                          {project.title}
+                        </div>
+
+                        <div className="text-[10px] font-mono text-purple-400">
+                          /{project.slug}
+                        </div>
+                      </td>
+
+                      <td className="py-3.5 px-4">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700 uppercase">
+                          {project.category}
+                        </span>
+                      </td>
+
+                      {/* Improved Tech Stack */}
+                      <td className="py-3.5 px-4">
+                        <div className="flex flex-wrap items-center gap-1 max-w-xs">
+                          {project.techStack?.slice(0, 3).map((tech, index) => (
+                            <span
+                              key={index}
+                              className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-900 text-slate-400"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+
+                          {project.techStack?.length > 3 && (
+                            <span
+                              title={project.techStack
+                                .slice(3)
+                                .join(', ')}
+                              className="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-600/10 text-purple-300 border border-purple-500/20"
+                            >
+                              +{project.techStack.length - 3} More
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        {project.featured ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 font-semibold">
+                            Featured
+                          </span>
+                        ) : (
+                          <span className="text-slate-600 font-mono text-[10px]">
+                            —
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="py-3.5 px-4 text-center">
+                        {project.isPublished ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                            Published
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                            Draft
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleEdit(project)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                            title="Edit Project"
+                          >
+                            <FiEdit2 className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            onClick={() => setDeleteTarget(project)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-950/20 transition-colors"
+                            title="Delete Project"
+                          >
+                            <FiTrash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+      {/* Project Form Modal */}
       <ProjectFormModal
         isOpen={isFormOpen}
         initialData={selectedProject}
         onSubmit={handleFormSubmit}
-        onClose={() => setIsFormOpen(false)}
-        isSubmitting={createMutation.isPending || updateMutation.isPending}
+        onClose={() => {
+          setIsFormOpen(false);
+          setSelectedProject(null);
+        }}
+        isSubmitting={
+          createMutation.isPending || updateMutation.isPending
+        }
       />
 
-      {/* Confirm Delete Modal */}
+      {/* Delete Confirmation */}
       <ConfirmDeleteModal
         isOpen={Boolean(deleteTarget)}
         title={`Delete "${deleteTarget?.title}"?`}

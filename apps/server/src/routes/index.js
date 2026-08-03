@@ -4,6 +4,8 @@ import authRoutes from './auth.routes.js';
 import projectRoutes from './project.routes.js';
 import skillRoutes from './skill.routes.js';
 import experienceRoutes from './experience.routes.js';
+import dashboardRoutes from './dashboard.routes.js';
+import contactRoutes from './contact.routes.js';
 
 const apiRouter = Router();
 
@@ -16,5 +18,9 @@ apiRouter.use('/auth', authRoutes);
 apiRouter.use('/projects', projectRoutes);
 apiRouter.use('/skills', skillRoutes);
 apiRouter.use('/experience', experienceRoutes);
+apiRouter.use('/dashboard', dashboardRoutes);
+apiRouter.use('/contact', contactRoutes);
 
 export default apiRouter;
+
+

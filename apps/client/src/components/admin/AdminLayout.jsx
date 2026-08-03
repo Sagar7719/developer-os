@@ -6,6 +6,7 @@ import {
   FiFolder,
   FiCpu,
   FiBriefcase,
+  FiMail,
   FiLogOut,
   FiExternalLink,
   FiShield,
@@ -25,6 +26,7 @@ export function AdminLayout() {
     { label: 'Projects CMS', path: '/admin/projects', icon: FiFolder },
     { label: 'Skills CMS', path: '/admin/skills', icon: FiCpu },
     { label: 'Experience CMS', path: '/admin/experience', icon: FiBriefcase },
+    { label: 'Messages Inbox', path: '/admin/messages', icon: FiMail },
   ];
 
   return (

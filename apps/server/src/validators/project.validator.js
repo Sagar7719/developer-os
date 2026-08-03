@@ -43,55 +43,67 @@ export const createProjectValidation = [
     .withMessage('Title is required')
     .isLength({ max: 120 })
     .withMessage('Title cannot exceed 120 characters'),
+
   body('slug')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isSlug()
     .withMessage('Invalid slug format'),
+
   body('category')
     .optional()
     .isIn(PROJECT_CATEGORIES)
     .withMessage(`Category must be one of: ${PROJECT_CATEGORIES.join(', ')}`),
+
   body('subtitle')
     .optional()
     .trim()
     .isLength({ max: 200 })
     .withMessage('Subtitle cannot exceed 200 characters'),
+
   body('description')
     .trim()
     .notEmpty()
     .withMessage('Description is required'),
+
   body('techStack')
     .optional()
     .isArray()
     .withMessage('techStack must be an array of strings'),
+
   body('githubUrl')
     .optional()
     .trim()
     .isURL()
     .withMessage('githubUrl must be a valid URL'),
+
   body('liveUrl')
     .optional()
     .trim()
     .isURL()
     .withMessage('liveUrl must be a valid URL'),
+
   body('coverImage')
     .optional()
     .trim(),
+
   body('galleryImages')
     .optional()
     .isArray()
     .withMessage('galleryImages must be an array of strings'),
+
   body('featured')
     .optional()
     .isBoolean()
     .withMessage('featured must be a boolean')
     .toBoolean(),
+
   body('isPublished')
     .optional()
     .isBoolean()
     .withMessage('isPublished must be a boolean')
     .toBoolean(),
+
   body('order')
     .optional()
     .isInt({ min: 0 })
@@ -101,6 +113,7 @@ export const createProjectValidation = [
 
 export const updateProjectValidation = [
   ...projectIdValidation,
+
   body('title')
     .optional()
     .trim()
@@ -108,52 +121,64 @@ export const updateProjectValidation = [
     .withMessage('Title cannot be empty')
     .isLength({ max: 120 })
     .withMessage('Title cannot exceed 120 characters'),
+
   body('slug')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isSlug()
     .withMessage('Invalid slug format'),
+
   body('category')
     .optional()
     .isIn(PROJECT_CATEGORIES)
     .withMessage(`Category must be one of: ${PROJECT_CATEGORIES.join(', ')}`),
+
   body('subtitle')
     .optional()
     .trim()
     .isLength({ max: 200 })
     .withMessage('Subtitle cannot exceed 200 characters'),
+
   body('description')
     .optional()
     .trim()
     .notEmpty()
     .withMessage('Description cannot be empty'),
+
   body('techStack')
     .optional()
     .isArray()
     .withMessage('techStack must be an array of strings'),
+
   body('githubUrl')
     .optional()
     .trim(),
+
   body('liveUrl')
     .optional()
     .trim(),
+
   body('coverImage')
     .optional()
     .trim(),
+
   body('galleryImages')
     .optional()
     .isArray()
     .withMessage('galleryImages must be an array of strings'),
+
   body('featured')
     .optional()
     .isBoolean()
     .withMessage('featured must be a boolean')
     .toBoolean(),
+
   body('isPublished')
     .optional()
     .isBoolean()
     .withMessage('isPublished must be a boolean')
     .toBoolean(),
+
   body('order')
     .optional()
     .isInt({ min: 0 })

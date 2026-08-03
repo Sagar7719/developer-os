@@ -1,13 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiArrowRight, FiCode, FiLayers, FiShield, FiTerminal } from 'react-icons/fi';
+import { useQuery } from '@tanstack/react-query';
+import { fetchDashboardStats } from '../../api/dashboard.api.js';
+import { FiArrowRight, FiCode } from 'react-icons/fi';
+
+const AVAILABLE_FOR_WORK = true;
 
 export function Hero() {
+  const { data: stats, isLoading, isError } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: () => fetchDashboardStats(),
+  });
+
+  const displayProjects = !isLoading && !isError && stats?.totalProjects !== undefined ? `${stats.totalProjects}+` : '—';
+  const displayTechnologies = !isLoading && !isError && stats?.totalTechnologies !== undefined ? `${stats.totalTechnologies}+` : '—';
+  const displayYears = !isLoading && !isError && stats?.experienceYears !== undefined ? `${stats.experienceYears}+` : '—';
+
   return (
     <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24">
       {/* Background Glow Overlay */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 right-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-1/3 right-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto space-y-6">
@@ -29,11 +42,13 @@ export function Hero() {
 
           {/* Value Proposition */}
           <p className="text-base sm:text-lg text-slate-300 font-normal leading-relaxed">
-            Built to demonstrate modern software engineering practices through a scalable portfolio platform, personal CMS, and 5-tier backend architecture.
+            Built to demonstrate modern software engineering practices through a
+            scalable portfolio platform, personal CMS, and 5-tier backend
+            architecture.
           </p>
 
           <div className="pt-2 text-xs font-mono text-cyan-400 font-semibold tracking-wider uppercase">
-            Designed & Engineered by Sagar.dev
+            Designed &amp; Engineered by Sagar.dev
           </div>
 
           {/* Action CTAs */}
@@ -57,32 +72,41 @@ export function Hero() {
             </a>
           </div>
 
-          {/* Architecture Highlights Bar */}
-          <div className="pt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-            <div className="bg-[#1e293b]/40 border border-slate-800/80 rounded-xl p-3.5 space-y-1">
-              <FiLayers className="w-4 h-4 text-purple-400" />
-              <div className="text-xs font-semibold text-slate-200">5-Tier Server Pattern</div>
-              <div className="text-[11px] text-slate-400 font-mono">Route → DB Layer</div>
+          {/* ========================= */}
+          {/* Developer Stats */}
+          {/* ========================= */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10">
+            <div className="rounded-xl border border-slate-800 bg-[#1e293b]/40 p-5 backdrop-blur-sm">
+              <div className="text-3xl font-extrabold text-white">{displayProjects}</div>
+              <div className="mt-2 text-xs font-mono uppercase tracking-wider text-slate-400">
+                Projects
+              </div>
             </div>
 
-            <div className="bg-[#1e293b]/40 border border-slate-800/80 rounded-xl p-3.5 space-y-1">
-              <FiShield className="w-4 h-4 text-cyan-400" />
-              <div className="text-xs font-semibold text-slate-200">Identity Platform</div>
-              <div className="text-[11px] text-slate-400 font-mono">Dual JWT & SHA-256</div>
+            <div className="rounded-xl border border-slate-800 bg-[#1e293b]/40 p-5 backdrop-blur-sm">
+              <div className="text-3xl font-extrabold text-cyan-400">{displayTechnologies}</div>
+              <div className="mt-2 text-xs font-mono uppercase tracking-wider text-slate-400">
+                Technologies
+              </div>
             </div>
 
-            <div className="bg-[#1e293b]/40 border border-slate-800/80 rounded-xl p-3.5 space-y-1">
-              <FiTerminal className="w-4 h-4 text-purple-400" />
-              <div className="text-xs font-semibold text-slate-200">pnpm Monorepo</div>
-              <div className="text-[11px] text-slate-400 font-mono">React 19 + Express</div>
+            <div className="rounded-xl border border-slate-800 bg-[#1e293b]/40 p-5 backdrop-blur-sm">
+              <div className="text-3xl font-extrabold text-purple-400">{displayYears}</div>
+              <div className="mt-2 text-xs font-mono uppercase tracking-wider text-slate-400">
+                Years
+              </div>
             </div>
 
-            <div className="bg-[#1e293b]/40 border border-slate-800/80 rounded-xl p-3.5 space-y-1">
-              <FiCode className="w-4 h-4 text-cyan-400" />
-              <div className="text-xs font-semibold text-slate-200">Enterprise Specs</div>
-              <div className="text-[11px] text-slate-400 font-mono">DOC-000 Compliant</div>
+            <div className="rounded-xl border border-slate-800 bg-[#1e293b]/40 p-5 backdrop-blur-sm">
+              <div className="text-lg font-bold text-emerald-400">
+                {AVAILABLE_FOR_WORK ? 'Available' : 'Unavailable'}
+              </div>
+              <div className="mt-2 text-xs font-mono uppercase tracking-wider text-slate-400">
+                For Work
+              </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>

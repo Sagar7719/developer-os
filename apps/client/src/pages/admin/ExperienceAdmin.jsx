@@ -27,6 +27,7 @@ export function ExperienceAdmin() {
     mutationFn: createExperienceApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['experience'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setIsFormOpen(false);
     },
   });
@@ -35,6 +36,7 @@ export function ExperienceAdmin() {
     mutationFn: updateExperienceApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['experience'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setIsFormOpen(false);
       setSelectedExperience(null);
     },
@@ -44,6 +46,7 @@ export function ExperienceAdmin() {
     mutationFn: deleteExperienceApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['experience'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setDeleteTarget(null);
     },
   });

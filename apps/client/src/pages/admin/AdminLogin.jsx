@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.jsx';
+import { PageMetadata } from '../../components/PageMetadata.jsx';
 import { FiLock, FiMail, FiShield, FiAlertCircle } from 'react-icons/fi';
 
 export function AdminLogin() {
@@ -32,6 +33,7 @@ export function AdminLogin() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+      <PageMetadata title="Admin CMS Portal" noindex={true} />
       <div className="w-full max-w-md bg-[#1e293b]/60 border border-slate-800 rounded-2xl p-8 space-y-6 shadow-2xl shadow-purple-500/5">
         <div className="text-center space-y-2">
           <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mx-auto">
