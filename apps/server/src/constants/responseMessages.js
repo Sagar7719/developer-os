@@ -1,6 +1,5 @@
 /**
  * Application-wide generic API response messages.
- * Note: Domain-specific business entity messages must NOT be placed here.
  */
 export const ResponseMessages = Object.freeze({
   SUCCESS: 'Operation completed successfully.',
@@ -23,6 +22,11 @@ export const ResponseMessages = Object.freeze({
   INVALID_CREDENTIALS: 'Invalid email or password.',
   EMAIL_ALREADY_EXISTS: 'An account with this email address already exists.',
   INVALID_TOKEN: 'Invalid or expired token.',
+
+  // Generic Resource Operation Messages
+  CREATED_SUCCESS: 'Resource created successfully.',
+  UPDATED_SUCCESS: 'Resource updated successfully.',
+  DELETED_SUCCESS: 'Resource deleted successfully.',
 });
 
 export default ResponseMessages;
