@@ -21,6 +21,7 @@ function validateEnv() {
   const productionOnlyKeys = [
     'CLIENT_ORIGIN',
     'CONTACT_RECEIVER_EMAIL',
+    'GEMINI_API_KEY',
   ];
 
   const requiredKeys = isProduction
@@ -55,6 +56,10 @@ export const config = Object.freeze({
   jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
   contactReceiverEmail: process.env.CONTACT_RECEIVER_EMAIL || 'admin@developer-os.dev',
   trustProxy: process.env.TRUST_PROXY === '1' || process.env.TRUST_PROXY === 'true',
+  geminiApiKey: process.env.GEMINI_API_KEY || '',
+  geminiModel: process.env.GEMINI_MODEL || 'gemini-2.0-flash',
+  aiRateLimitWindowMs: parseInt(process.env.AI_RATE_LIMIT_WINDOW_MS || '900000', 10),
+  aiRateLimitMax: parseInt(process.env.AI_RATE_LIMIT_MAX || '15', 10),
 });
 
 export default config;
