@@ -8,6 +8,7 @@ import dashboardRoutes from './dashboard.routes.js';
 import contactRoutes from './contact.routes.js';
 import settingsRoutes from './settings.routes.js';
 import aiRoutes from './ai.routes.js';
+import mediaRoutes from './media.routes.js';
 
 const apiRouter = Router();
 
@@ -24,6 +25,7 @@ apiRouter.use('/dashboard', dashboardRoutes);
 apiRouter.use('/contact', contactRoutes);
 apiRouter.use('/settings', settingsRoutes);
 apiRouter.use('/ai', aiRoutes);
+apiRouter.use('/media', mediaRoutes);
 
 export default apiRouter;
 

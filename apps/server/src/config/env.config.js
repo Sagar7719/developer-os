@@ -60,6 +60,10 @@ export const config = Object.freeze({
   geminiModel: process.env.GEMINI_MODEL || 'gemini-2.0-flash',
   aiRateLimitWindowMs: parseInt(process.env.AI_RATE_LIMIT_WINDOW_MS || '900000', 10),
   aiRateLimitMax: parseInt(process.env.AI_RATE_LIMIT_MAX || '15', 10),
+  maxFileSizeMb: parseInt(process.env.MAX_FILE_SIZE_MB || '10', 10),
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
 });
 
 export default config;
