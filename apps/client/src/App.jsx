@@ -25,6 +25,7 @@ const SkillAdmin = lazy(() => import('./pages/admin/SkillAdmin.jsx'));
 const ExperienceAdmin = lazy(() => import('./pages/admin/ExperienceAdmin.jsx'));
 const ContactAdmin = lazy(() => import('./pages/admin/ContactAdmin.jsx'));
 const SettingsAdmin = lazy(() => import('./pages/admin/SettingsAdmin.jsx'));
+const AILogsAdmin = lazy(() => import('./pages/admin/AILogsAdmin.jsx'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -86,6 +87,7 @@ export default function App() {
                   <Route path="experience" element={<ExperienceAdmin />} />
                   <Route path="messages" element={<ContactAdmin />} />
                   <Route path="settings" element={<SettingsAdmin />} />
+                  <Route path="ai-logs" element={<AILogsAdmin />} />
                 </Route>
               </Routes>
             </Suspense>

@@ -40,8 +40,25 @@ export const rateLimiterMiddleware = rateLimit({
   },
 });
 
+// Dedicated AI Endpoint Rate Limiter Configuration (RFC-008)
+export const aiRateLimiterMiddleware = rateLimit({
+  windowMs: config.aiRateLimitWindowMs,
+  max: config.aiRateLimitMax,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(HttpStatus.TOO_MANY_REQUESTS).json(
+      ApiResponse.error({
+        statusCode: HttpStatus.TOO_MANY_REQUESTS,
+        message: 'AI generation rate limit exceeded. Please wait before requesting additional AI completions.',
+      })
+    );
+  },
+});
+
 export default {
   helmetMiddleware,
   corsMiddleware,
   rateLimiterMiddleware,
+  aiRateLimiterMiddleware,
 };

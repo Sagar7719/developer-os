@@ -167,10 +167,12 @@ For complete Architectural Decision Records, consult [docs/architecture/README.m
 
 ## 7. Current Implemented Stack vs Future Architecture
 
-### Current Implemented Architecture (`v0.3.0`)
+### Current Implemented Architecture (`v1.2.0`)
 - **Monorepo Topology**: `pnpm` workspaces (`apps/client`, `apps/server`, `packages/shared`, `packages/ui`).
 - **Backend Platform**: Decoupled Express engine, 5-tier architecture, Winston logger, security stack, global error handler, health check API (`GET /api/v1/health`).
 - **Identity Platform**: User schema, `bcryptjs`, dual JWT tokens, SHA-256 token database storage, `UserDTO`, RBAC, `/api/v1/auth/*` endpoints.
+- **Platform Settings CMS & Maintenance Guard**: Singleton settings model, public cache sharing, route guard.
+- **AI Integration Layer (RFC-008)**: `@google/genai` Gemini 2.0 Flash integration, 5-tier AI routes (`/api/v1/ai/*`), real-time SSE stream controller, 90-day MongoDB TTL audit log repository (`AILog`), dedicated rate limiter (`aiRateLimiterMiddleware`), client streaming hook (`useAIStream`), slide-out `AIAssistantDrawer`, and Admin AI telemetry dashboard (`AILogsAdmin`).
 
 ### Future Architecture Roadmap
 - **RFC-004**: Public Portfolio & CMS Database Schemas.

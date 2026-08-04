@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.jsx';
+import { AIAssistantDrawer } from './AIAssistantDrawer.jsx';
 import {
   FiGrid,
   FiFolder,
@@ -11,11 +12,14 @@ import {
   FiLogOut,
   FiExternalLink,
   FiShield,
+  FiZap,
+  FiActivity,
 } from 'react-icons/fi';
 
 export function AdminLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -28,6 +32,7 @@ export function AdminLayout() {
     { label: 'Skills CMS', path: '/admin/skills', icon: FiCpu },
     { label: 'Experience CMS', path: '/admin/experience', icon: FiBriefcase },
     { label: 'Messages Inbox', path: '/admin/messages', icon: FiMail },
+    { label: 'AI Telemetry & Logs', path: '/admin/ai-logs', icon: FiActivity },
     { label: 'Platform Settings', path: '/admin/settings', icon: FiSettings },
   ];
 
@@ -43,7 +48,7 @@ export function AdminLayout() {
             </div>
             <div>
               <div className="text-sm font-bold text-white tracking-tight">Admin CMS</div>
-              <div className="text-[10px] font-mono text-purple-400">Developer OS v0.3.0</div>
+              <div className="text-[10px] font-mono text-purple-400">Developer OS v1.2.0</div>
             </div>
           </div>
 
@@ -94,13 +99,23 @@ export function AdminLayout() {
             <span className="text-cyan-400">{user?.role}</span>)
           </div>
 
-          <button
-            onClick={handleLogout}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-red-400 hover:bg-red-950/20 transition-colors"
-          >
-            <FiLogOut className="w-3.5 h-3.5" />
-            Sign Out
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsAiDrawerOpen(true)}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-purple-600/20 text-purple-300 border border-purple-500/40 hover:bg-purple-600/30 transition-all shadow-sm"
+            >
+              <FiZap className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+              <span>AI Assistant</span>
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-red-400 hover:bg-red-950/20 transition-colors"
+            >
+              <FiLogOut className="w-3.5 h-3.5" />
+              Sign Out
+            </button>
+          </div>
         </header>
 
         {/* Content View */}
@@ -108,6 +123,9 @@ export function AdminLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* AI Assistant Slide-out Drawer */}
+      <AIAssistantDrawer isOpen={isAiDrawerOpen} onClose={() => setIsAiDrawerOpen(false)} />
     </div>
   );
 }

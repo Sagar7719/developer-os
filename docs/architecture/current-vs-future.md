@@ -41,6 +41,8 @@ flowchart LR
 - **Identity Platform**: User database model, `bcryptjs` password hashing, dual JWT token generation (15m Access / 7d `httpOnly` Refresh Cookie), SHA-256 refresh token database hashing, `UserDTO` serialization, Winston audit logs, and Role-Based Access Control (`Roles.ADMIN`, `Roles.USER`).
 - **Health Diagnostics**: Single 5-tier diagnostic route `GET /api/v1/health` returning system uptime, memory usage, and database ping statistics.
 
+- **AI Integration (RFC-008)**: `@google/genai` Gemini 2.0 Flash integration, 5-tier AI routes (`/api/v1/ai/*`), real-time SSE stream controller, 90-day MongoDB TTL audit log repository (`AILog`), dedicated rate limiter (`aiRateLimiterMiddleware`), client streaming hook (`useAIStream`), slide-out `AIAssistantDrawer`, and Admin AI telemetry dashboard (`AILogsAdmin`).
+
 ---
 
 ## 2. Future System Architecture Roadmap
@@ -53,8 +55,6 @@ flowchart LR
         RFC004[RFC-004: Portfolio CMS]
         RFC005[RFC-005: Blog Engine]
         RFC006[RFC-006: Media Asset Manager]
-        RFC007[RFC-007: Analytics & Contact]
-        RFC008[RFC-008: AI Integration Layer]
     end
 ```
 
@@ -65,21 +65,18 @@ flowchart LR
 | **RFC-004** | Portfolio CMS | Portfolio, Project, & Skill models extending 5-tier `Route` → `Controller` → `Service` → `Repository` structure. |
 | **RFC-005** | Blog Engine | Post schema, tag indexing, AST Markdown rendering service, and public/draft status controllers. |
 | **RFC-006** | Media Manager | Cloudinary SDK storage abstraction repository, multer file stream validation middleware. |
-| **RFC-007** | Analytics & Contact | Contact submission persistence, rate-limited contact routes, and aggregated system metrics services. |
-| **RFC-008** | AI Integration | LLM agent service wrappers, prompt template engine, streaming HTTP response controllers. |
 
 ---
 
 ## 3. Architectural Comparison Matrix
 
-| System Boundary | Current Status (v0.3.0) | Future Roadmap Extension |
+| System Boundary | Current Status (Active) | Future Roadmap Extension |
 | :--- | :--- | :--- |
 | **Authentication** | Active: Dual JWT, `httpOnly` cookie, SHA-256 DB hashes | OAuth2 / Social Login provider integration |
 | **User Roles** | Active: `Roles.ADMIN`, `Roles.USER` | Granular permission scopes per resource |
-| **Database Collections** | Active: `users` collection | `projects`, `posts`, `assets`, `messages` collections |
-| **API Endpoints** | Active: `/api/v1/health`, `/api/v1/auth/*` | `/api/v1/projects`, `/api/v1/posts`, `/api/v1/media` |
-| **File Storage** | Active: Memory / Buffer handling | Cloudinary cloud media storage repository |
-| **AI Integration** | Active: None | Subagent workflow orchestrators & stream handlers |
+| **Database Collections** | Active: `users`, `projects`, `skills`, `experiences`, `contacts`, `settings`, `ai_logs` | `posts`, `assets` collections |
+| **API Endpoints** | Active: `/health`, `/auth/*`, `/projects`, `/skills`, `/experience`, `/contact`, `/settings`, `/ai/*` | `/posts`, `/media` |
+| **AI Integration** | Active: `@google/genai` Gemini 2.0 Flash, SSE streaming, 90-day TTL audit logs | Subagent multi-LLM orchestrators |
 
 ---
 
