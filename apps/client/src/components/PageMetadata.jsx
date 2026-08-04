@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { usePublicSettings } from '../hooks/usePublicSettings.js';
 
 /**
  * PageMetadata — Lightweight zero-dependency SEO & document metadata manager.
@@ -12,17 +13,26 @@ export function PageMetadata({
   jsonLd = null,
 }) {
   const location = useLocation();
+  const { data: settings } = usePublicSettings();
+
+  const siteName = settings?.general?.siteName?.trim() || 'Developer OS';
+  const seoTitle = settings?.seo?.defaultTitle?.trim() || `${siteName} | Sagar.dev`;
+  const seoDescription =
+    settings?.seo?.defaultDescription?.trim() ||
+    'Production-Grade Developer Platform built to demonstrate scalable software engineering, personal CMS, and 5-tier backend architecture.';
+  const seoOgImage = settings?.seo?.openGraphImage?.trim();
+  const seoKeywords = Array.isArray(settings?.seo?.defaultKeywords)
+    ? settings.seo.defaultKeywords.filter(Boolean).join(', ')
+    : '';
 
   const rawSiteUrl = import.meta.env.VITE_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://developer-os.dev');
   const siteUrl = rawSiteUrl.replace(/\/$/, '');
-  const defaultOgImage = import.meta.env.VITE_OG_IMAGE || `${siteUrl}/favicon.svg`;
+  const defaultOgImage = seoOgImage || import.meta.env.VITE_OG_IMAGE || `${siteUrl}/favicon.svg`;
   const image = ogImage || defaultOgImage;
   const canonicalUrl = `${siteUrl}${location.pathname}`;
 
-  const fullTitle = title ? `${title} | Developer OS` : 'Developer OS | Sagar.dev';
-  const defaultDescription =
-    description ||
-    'Production-Grade Developer Platform built to demonstrate scalable software engineering, personal CMS, and 5-tier backend architecture.';
+  const fullTitle = title ? `${title} | ${siteName}` : seoTitle;
+  const finalDescription = description || seoDescription;
 
   useEffect(() => {
     // 1. Set Document Title
@@ -51,24 +61,27 @@ export function PageMetadata({
     };
 
     // 2. Standard Meta Tags
-    setMetaTag('name', 'description', defaultDescription);
+    setMetaTag('name', 'description', finalDescription);
     setMetaTag('name', 'robots', noindex ? 'noindex, nofollow' : 'index, follow');
+    if (seoKeywords) {
+      setMetaTag('name', 'keywords', seoKeywords);
+    }
 
     // 3. Canonical URL
     setLinkTag('canonical', canonicalUrl);
 
     // 4. Open Graph Meta Tags
     setMetaTag('property', 'og:title', fullTitle);
-    setMetaTag('property', 'og:description', defaultDescription);
+    setMetaTag('property', 'og:description', finalDescription);
     setMetaTag('property', 'og:image', image);
     setMetaTag('property', 'og:url', canonicalUrl);
-    setMetaTag('property', 'og:site_name', 'Developer OS');
+    setMetaTag('property', 'og:site_name', siteName);
     setMetaTag('property', 'og:type', 'website');
 
     // 5. Twitter Card Meta Tags
     setMetaTag('name', 'twitter:card', 'summary_large_image');
     setMetaTag('name', 'twitter:title', fullTitle);
-    setMetaTag('name', 'twitter:description', defaultDescription);
+    setMetaTag('name', 'twitter:description', finalDescription);
     setMetaTag('name', 'twitter:image', image);
 
     // 6. JSON-LD Structured Data
@@ -83,9 +96,10 @@ export function PageMetadata({
     } else if (scriptTag) {
       scriptTag.remove();
     }
-  }, [fullTitle, defaultDescription, image, canonicalUrl, noindex, jsonLd]);
+  }, [fullTitle, finalDescription, image, canonicalUrl, noindex, jsonLd, siteName, seoKeywords]);
 
   return null;
 }
 
 export default PageMetadata;
+

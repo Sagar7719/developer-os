@@ -6,6 +6,7 @@ import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 import { ErrorBoundary } from './components/ErrorBoundary.jsx';
 import { ScrollToTop } from './components/ScrollToTop.jsx';
 import { PageFallback } from './components/PageFallback.jsx';
+import { MaintenanceGuard } from './components/MaintenanceGuard.jsx';
 import { Navbar } from './components/Navbar.jsx';
 import { Footer } from './components/Footer.jsx';
 
@@ -23,6 +24,7 @@ const ProjectAdmin = lazy(() => import('./pages/admin/ProjectAdmin.jsx'));
 const SkillAdmin = lazy(() => import('./pages/admin/SkillAdmin.jsx'));
 const ExperienceAdmin = lazy(() => import('./pages/admin/ExperienceAdmin.jsx'));
 const ContactAdmin = lazy(() => import('./pages/admin/ContactAdmin.jsx'));
+const SettingsAdmin = lazy(() => import('./pages/admin/SettingsAdmin.jsx'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,20 +49,22 @@ export default function App() {
                 <Route
                   path="/*"
                   element={
-                    <div className="min-h-screen bg-[#0f172a] text-slate-100 flex flex-col font-sans selection:bg-purple-500/30 selection:text-purple-200">
-                      <Navbar />
-                      <main className="flex-1">
-                        <Suspense fallback={<PageFallback />}>
-                          <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/projects" element={<ProjectsPage />} />
-                            <Route path="/contact" element={<ContactPage />} />
-                            <Route path="*" element={<NotFoundPage />} />
-                          </Routes>
-                        </Suspense>
-                      </main>
-                      <Footer />
-                    </div>
+                    <MaintenanceGuard>
+                      <div className="min-h-screen bg-[#0f172a] text-slate-100 flex flex-col font-sans selection:bg-purple-500/30 selection:text-purple-200">
+                        <Navbar />
+                        <main className="flex-1">
+                          <Suspense fallback={<PageFallback />}>
+                            <Routes>
+                              <Route path="/" element={<Home />} />
+                              <Route path="/projects" element={<ProjectsPage />} />
+                              <Route path="/contact" element={<ContactPage />} />
+                              <Route path="*" element={<NotFoundPage />} />
+                            </Routes>
+                          </Suspense>
+                        </main>
+                        <Footer />
+                      </div>
+                    </MaintenanceGuard>
                   }
                 />
 
@@ -81,6 +85,7 @@ export default function App() {
                   <Route path="skills" element={<SkillAdmin />} />
                   <Route path="experience" element={<ExperienceAdmin />} />
                   <Route path="messages" element={<ContactAdmin />} />
+                  <Route path="settings" element={<SettingsAdmin />} />
                 </Route>
               </Routes>
             </Suspense>

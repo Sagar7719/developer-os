@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.1.0] - 2026-08-04
+
+### Added
+- **Platform Settings CMS (RFC-007)**: Full 5-tier architecture (`Model`, `DTO`, `Validator`, `Repository`, `Service`, `Controller`, `Routes`) for global site settings singleton (`key: 'site_settings'`).
+- **Admin Settings CMS Page (`SettingsAdmin.jsx`)**: 9-tab administration dashboard for General, Hero, About, Social, Contact, SEO, Footer, Maintenance, and System Info.
+- **Dynamic Portfolio Bindings**: Real-time binding of `Hero`, `Navbar`, `Footer`, `Home`, `ContactPage`, and `PageMetadata` to cached settings (`usePublicSettings()`).
+- **System Maintenance Guard Mode (`MaintenanceGuard.jsx`)**: Extensible global route guard protecting public pages when Maintenance Mode is enabled (`MAINTENANCE_BYPASS_ROUTES = ['/admin']`). Automated SEO overriding (`noindex, nofollow`) during maintenance lock cycles.
+- **Final Release Documentation**: Published comprehensive release analysis in `docs/releases/RFC-007-FINAL-RELEASE-REPORT.md`.
+
+---
+
 ## [1.0.0] - 2026-08-02
 
 ### Added

@@ -6,6 +6,7 @@ import skillRoutes from './skill.routes.js';
 import experienceRoutes from './experience.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
 import contactRoutes from './contact.routes.js';
+import settingsRoutes from './settings.routes.js';
 
 const apiRouter = Router();
 
@@ -20,6 +21,7 @@ apiRouter.use('/skills', skillRoutes);
 apiRouter.use('/experience', experienceRoutes);
 apiRouter.use('/dashboard', dashboardRoutes);
 apiRouter.use('/contact', contactRoutes);
+apiRouter.use('/settings', settingsRoutes);
 
 export default apiRouter;
 

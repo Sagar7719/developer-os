@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { submitContactForm } from '../api/contact.api.js';
 import { PageMetadata } from '../components/PageMetadata.jsx';
+import { usePublicSettings } from '../hooks/usePublicSettings.js';
 import {
   FiMail,
   FiSend,
@@ -11,12 +12,30 @@ import {
   FiMessageSquare,
   FiTag,
   FiHelpCircle,
+  FiPhone,
+  FiMapPin,
+  FiGithub,
+  FiLinkedin,
+  FiTwitter,
 } from 'react-icons/fi';
 
 const MAX_MESSAGE_LENGTH = 2000;
 
 export function ContactPage() {
   const queryClient = useQueryClient();
+  const { data: settings } = usePublicSettings();
+
+  const siteName = settings?.general?.siteName?.trim() || 'Developer OS';
+  const rawAuthorName = settings?.hero?.name?.trim() || 'Sagar.dev';
+  const brandSub = rawAuthorName.includes('.') ? rawAuthorName : `${rawAuthorName}.dev`;
+
+  const publicEmail = settings?.contactInfo?.publicEmail?.trim() || 'sagar@developer-os.dev';
+  const phone = settings?.contactInfo?.phone?.trim();
+  const address = settings?.contactInfo?.address?.trim() || 'San Francisco, CA';
+
+  const githubUrl = settings?.socialLinks?.github?.trim();
+  const linkedinUrl = settings?.socialLinks?.linkedin?.trim();
+  const twitterUrl = settings?.socialLinks?.twitter?.trim();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -97,7 +116,7 @@ export function ContactPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
       <PageMetadata
         title="Contact & Direct Inquiries"
-        description="Send a direct message or project inquiry to Sagar.dev via Developer OS."
+        description={`Send a direct message or project inquiry to ${brandSub} via ${siteName}.`}
       />
       {/* Header Banner */}
       <div className="text-center space-y-4 max-w-2xl mx-auto">
@@ -120,6 +139,81 @@ export function ContactPage() {
           Send a direct message below and I will respond as soon as possible.
         </p>
       </div>
+
+      {/* Dynamic Contact Details & Social Profiles Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Email Card */}
+        <a
+          href={`mailto:${publicEmail}`}
+          className="bg-[#1e293b]/40 border border-slate-800 hover:border-purple-500/50 rounded-2xl p-5 flex items-center gap-3.5 transition-all group shadow-md"
+        >
+          <div className="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform shrink-0">
+            <FiMail className="w-5 h-5" />
+          </div>
+          <div className="overflow-hidden">
+            <div className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">Direct Email</div>
+            <div className="text-xs font-bold text-white truncate group-hover:text-purple-300 transition-colors">
+              {publicEmail}
+            </div>
+          </div>
+        </a>
+
+        {/* Location / Phone Card */}
+        <div className="bg-[#1e293b]/40 border border-slate-800 rounded-2xl p-5 flex items-center gap-3.5 shadow-md">
+          <div className="w-10 h-10 rounded-xl bg-cyan-600/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+            {phone ? <FiPhone className="w-5 h-5" /> : <FiMapPin className="w-5 h-5" />}
+          </div>
+          <div className="overflow-hidden">
+            <div className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
+              {phone ? 'Phone / Base' : 'Location'}
+            </div>
+            <div className="text-xs font-bold text-white truncate">
+              {phone ? `${phone} (${address})` : address}
+            </div>
+          </div>
+        </div>
+
+        {/* Social Connect Card */}
+        <div className="bg-[#1e293b]/40 border border-slate-800 rounded-2xl p-5 flex flex-col justify-center gap-1.5 shadow-md">
+          <div className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">Social Channels</div>
+          <div className="flex items-center gap-3 pt-0.5">
+            {githubUrl && (
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-white transition-colors"
+                title="GitHub"
+              >
+                <FiGithub className="w-4 h-4" />
+              </a>
+            )}
+            {linkedinUrl && (
+              <a
+                href={linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-cyan-400 transition-colors"
+                title="LinkedIn"
+              >
+                <FiLinkedin className="w-4 h-4" />
+              </a>
+            )}
+            {twitterUrl && (
+              <a
+                href={twitterUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-sky-400 transition-colors"
+                title="Twitter"
+              >
+                <FiTwitter className="w-4 h-4" />
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+
 
       {/* Success Notification Alert */}
       {showSuccessAlert && (

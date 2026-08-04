@@ -132,7 +132,29 @@ For complete Identity Platform specifications, view [docs/authentication/README.
 
 ---
 
-## 6. Engineering Design Principles & ADRs
+## 6. Platform Settings CMS & Maintenance Guard Architecture (v1.1.0)
+
+The Platform Settings CMS ([RFC-007](docs/releases/RFC-007-FINAL-RELEASE-REPORT.md)) implements a singleton domain configuration architecture for system settings and global portfolio state:
+
+- **5-Tier Settings Architecture**:
+  - **Model (`settings.model.js`)**: Mongoose schema storing `general`, `hero`, `about`, `socialLinks`, `contactInfo`, `seo`, `footer`, `futureReady`, and `maintenance` configuration blocks with singleton key index (`key: 'site_settings'`).
+  - **DTO (`settings.dto.js`)**: Converts MongoDB document to clean payload, hiding sensitive maintenance IP lists or internal timestamps when serializing public endpoints.
+  - **Validator (`settings.validator.js`)**: Sanitizes and validates nested configuration updates.
+  - **Repository & Service (`settings.repository.js`, `settings.service.js`)**: Encapsulates atomic upserts and provides default initial settings seeding.
+  - **Controller & Routes (`settings.controller.js`, `settings.routes.js`)**: Exposes authenticated management endpoints (`GET/PUT /api/v1/settings`) and unauthenticated public endpoints (`GET /api/v1/settings/public`).
+
+- **TanStack Query Cache Sharing**:
+  - `usePublicSettings()` hook consumes `GET /api/v1/settings/public` with 5-minute `staleTime` under queryKey `['site-settings']`.
+  - Saving settings in Admin CMS triggers `queryClient.invalidateQueries({ queryKey: ['site-settings'] })`, invalidating public cache instantly.
+
+- **System Maintenance Guard Mode (`MaintenanceGuard.jsx`)**:
+  - Extensible route wrapper guarding public pages when `settings.maintenance.enabled === true`.
+  - Route matcher `isMaintenanceBypassRoute(pathname)` checks `MAINTENANCE_BYPASS_ROUTES = ['/admin']`, guaranteeing uninterrupted admin access.
+  - Overrides document title (`Maintenance | Developer OS`) and enforces search engine exclusion (`<meta name="robots" content="noindex, nofollow" />`) during active maintenance cycles.
+
+---
+
+## 7. Engineering Design Principles & ADRs
 
 1. **Single Source of Truth**: Data schemas defined in `packages/shared` and `user.model.js` serve as single authoritative definitions.
 2. **Fail Fast Configuration**: `env.config.js` validates all mandatory environment variables on startup and halts boot if keys are missing.

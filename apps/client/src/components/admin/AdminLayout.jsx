@@ -7,6 +7,7 @@ import {
   FiCpu,
   FiBriefcase,
   FiMail,
+  FiSettings,
   FiLogOut,
   FiExternalLink,
   FiShield,
@@ -27,6 +28,7 @@ export function AdminLayout() {
     { label: 'Skills CMS', path: '/admin/skills', icon: FiCpu },
     { label: 'Experience CMS', path: '/admin/experience', icon: FiBriefcase },
     { label: 'Messages Inbox', path: '/admin/messages', icon: FiMail },
+    { label: 'Platform Settings', path: '/admin/settings', icon: FiSettings },
   ];
 
   return (
