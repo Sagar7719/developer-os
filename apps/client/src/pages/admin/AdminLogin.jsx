@@ -7,12 +7,19 @@ import { FiLock, FiMail, FiShield, FiAlertCircle } from 'react-icons/fi';
 export function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const isExpired = queryParams.get('expired') === 'true' || queryParams.get('expired') === '1';
+
+  const [errorMsg, setErrorMsg] = useState(
+    isExpired ? 'Session expired. Please sign in again.' : ''
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { login } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const from = location.state?.from?.pathname || '/admin';
 
