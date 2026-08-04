@@ -8,14 +8,16 @@ Designed & Engineered by **Sagar.dev**.
 
 ---
 
-[![Version](https://img.shields.io/badge/version-v0.3.0-blue.svg)](docs/releases/v0.3.0-identity-platform.md)
+[![Version](https://img.shields.io/badge/version-v1.3.1-blue.svg)](docs/releases/README.md)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-green.svg)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/react-v19.0-61dafb.svg)](https://react.dev/)
 [![Express](https://img.shields.io/badge/express-v4.19-lightgrey.svg)](https://expressjs.com/)
 [![MongoDB](https://img.shields.io/badge/mongodb-atlas-green.svg)](https://www.mongodb.com/atlas)
+[![Cloudinary](https://img.shields.io/badge/cloudinary-media_platform-blue.svg)](https://cloudinary.com/)
+[![Google Gemini](https://img.shields.io/badge/google_gemini-ai_integration-8E75B2.svg)](https://deepmind.google/technologies/gemini/)
 [![License](https://img.shields.io/badge/license-MIT-purple.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/docs-enterprise--standard-brightgreen.svg)](docs/README.md)
-[![Status](https://img.shields.io/badge/status-active--development-orange.svg)](docs/README.md)
+[![Status](https://img.shields.io/badge/status-production_candidate-brightgreen.svg)](docs/README.md)
 
 ---
 
@@ -65,6 +67,8 @@ flowchart LR
 
     Client -->|HTTP / REST API| Server
     Server -->|Mongoose ORM| DB[(MongoDB Atlas)]
+    Server -->|Cloudinary SDK| Cloudinary[(Cloudinary Storage)]
+    Server -->|Google GenAI SDK| Gemini[(Google Gemini AI)]
     Shared -.->|Workspace Link| Client
     Shared -.->|Workspace Link| Server
     UI -.->|Workspace Link| Client
@@ -75,42 +79,84 @@ flowchart LR
 ## Technology Stack
 
 - **Frontend**: React 19, Vite, Tailwind CSS, TanStack Query, Axios
-- **Backend**: Node.js, Express, Mongoose ORM, JWT, `bcryptjs`, Winston Logger
+- **Backend**: Node.js, Express, Mongoose ORM, Cloudinary SDK, Google Gemini AI SDK, JWT Authentication, Refresh Tokens, `bcryptjs`, Winston Logger
 - **Database**: MongoDB Atlas Cluster
+- **Media & AI**: Cloudinary Media Management, Google Gemini AI (Gemini 2.0 Flash)
+- **CI/CD & DevOps**: GitHub Actions CI, Docker
 - **Tooling**: pnpm Workspaces, ESLint, Prettier, EditorConfig
 - **Infrastructure**: Monorepo 5-tier layered server pattern (`Route` → `Controller` → `Service` → `Repository` → `Database`)
 
 ---
 
-## Implemented Capabilities (v0.3.0)
+## Key Features
+
+- **AI Assistant**: Streaming subagent integration powered by Google Gemini 2.0 Flash for content generation, code refactoring, and SEO optimization.
+- **Portfolio CMS**: Comprehensive content administration for projects, skills, experience, contact messages, and platform settings.
+- **JWT Authentication & Refresh Tokens**: Dual-token authentication with short-lived access JWTs and auto-rotating httpOnly refresh token cookies.
+- **Cloudinary Media Platform**: Provider-agnostic asset management supporting secure buffer uploads, folder organization, and metadata tracking.
+- **Admin Dashboard**: Secure control panel for managing portfolio data, monitoring system telemetry, and viewing real-time AI logs.
+- **Role-Based Access Control (RBAC)**: Fine-grained authorization middleware separating public read access from admin management privileges.
+- **RFC-driven Development**: Architectural discipline enforcing formal RFC specifications, design reviews, and runtime QA verification pipelines.
+- **GitHub Actions CI/CD**: Automated integration workflows running linting, build verification, and type checking on every commit.
+- **Monorepo Architecture**: Clean separation of concerns with shared packages, reusable UI primitives, and modular full-stack applications.
+
+---
+
+## Implemented Capabilities (v1.3.1)
 
 - **Monorepo Workspace Foundation ([ESD-001](docs/releases/v0.1.0-monorepo-foundation.md))**: `pnpm` workspace setup, ESLint, Prettier, EditorConfig, and cross-package linking (`packages/shared`, `packages/ui`).
 - **Backend Platform Engine ([RFC-002](docs/releases/v0.2.0-backend-platform.md))**: Express app/server decoupling, 5-tier layered architecture, native environment validation, Winston structured logger, security stack (`helmet`, `cors`, `express-rate-limit`), global error handling, and 5-tier health check API (`GET /api/v1/health`).
 - **Identity Platform Foundation ([RFC-003](docs/releases/v0.3.0-identity-platform.md))**: User database schema, Dual JWT Access/Refresh tokens, `bcryptjs` password hashing, SHA-256 refresh token database hashing, `UserDTO` sanitization, Winston audit logging, and Role-Based Access Control (`Roles.ADMIN`, `Roles.USER`).
+- **Public Portfolio & CMS Engine (RFC-004)**: Dynamic home, project showcase, experience timeline, interactive skills matrix, and settings repository.
+- **Contact & Messaging System (RFC-005)**: Contact form submission pipeline with rate limiting, email notifications, and admin inbox management.
+- **System Telemetry & Platform Settings (RFC-007)**: Dynamic platform configuration, system telemetry logging, maintenance mode guard, and admin telemetry panel.
+- **Google Gemini AI Integration (RFC-008)**: Server-sent events (SSE) streaming engine, Gemini 2.0 Flash integration, prompt template engine, AI usage telemetry logging, and interactive AI assistant drawer.
+- **Cloudinary Media Platform (RFC-009)**: Provider-agnostic media storage layer, memory buffer upload streaming, soft-delete preparation, configurable upload limits (`MAX_FILE_SIZE_MB`), and centralized `MediaFolder` enum constants.
+- **Authentication Stability Hotfix (v1.3.1)**: Axios error response metadata preservation, client-side automatic token refresh interceptor, and declarative React Router session expiration routing.
 
 ---
 
 ## Product Roadmap
 
-Planned modules for future releases:
-- **RFC-004**: Public Portfolio & CMS Engine
-- **RFC-005**: Blog Engine & Markdown Parser
-- **RFC-006**: Media Asset Manager (Cloudinary Integration)
-- **RFC-007**: System Analytics & Contact Management
-- **RFC-008**: AI Integration Layer & Subagent Automation
+- **RFC-010**: Media Manager UI & Asset Selector Modal
+- **RFC-011**: Projects CMS Enhancement & Markdown Editor
+- **RFC-012**: Skills CMS Enhancement & Grouping Filters
+- **RFC-013**: Experience CMS Enhancement & Rich Text Highlights
+- **Production Deployment**: Automated Docker & Kubernetes staging/production pipeline
 
 ---
 
 ## Screenshots
 
-*Coming in v0.4.0*
+### Public Portfolio
+![Public Portfolio Placeholder](assets/screenshots/public-portfolio.png)
+*Modern responsive developer portfolio with dynamic projects matrix and skills showcase.*
 
-This section will showcase:
-- Home Page & Public Portfolio
-- Developer Dashboard
-- Authentication Flows
-- Admin CMS
-- Mobile Views
+### Admin Dashboard
+![Admin Dashboard Placeholder](assets/screenshots/admin-dashboard.png)
+*Centralized management hub for platform settings, telemetry analytics, and CMS operations.*
+
+### Authentication
+![Authentication Placeholder](assets/screenshots/authentication.png)
+*Secure admin portal login with dual JWT authorization and automated token rotation.*
+
+### AI Assistant
+![AI Assistant Placeholder](assets/screenshots/ai-assistant.png)
+*Real-time streaming AI subagent powered by Google Gemini 2.0 Flash.*
+
+### Media Platform
+![Media Platform Placeholder](assets/screenshots/media-platform.png)
+*Cloudinary-backed media asset management with folder categorization and metadata storage.*
+
+---
+
+## Release History
+
+- **v1.3.1**: Authentication Stability Hotfix (Axios interceptor error preservation & declarative token refresh handling)
+- **v1.3.0**: Media Platform (Cloudinary integration, buffer streaming & provider-agnostic storage layer)
+- **v1.2.0**: AI Integration (Google Gemini 2.0 Flash streaming engine & AI assistant drawer)
+- **v1.1.0**: CMS Platform (Public portfolio, contact engine, telemetry & admin control panel)
+- **v1.0.0**: Identity Platform (Dual JWT authentication, RBAC & security stack)
 
 ---
 
@@ -126,10 +172,10 @@ Consult **[docs/README.md](docs/README.md)** as the primary gateway for all docu
 
 | Metric | Status |
 | :--- | :--- |
-| **Current Release** | `v0.3.0` |
-| **Completed RFCs** | 3 (`ESD-001`, `RFC-002`, `RFC-003`) |
+| **Current Release** | `v1.3.1` |
+| **Completed RFCs** | RFC-001 through RFC-009 |
 | **Documentation Standard** | Enterprise Standard ([DOC-000](docs/DOC-000-style-guide.md)) |
-| **Status** | Active Development |
+| **Status** | Production Candidate |
 
 ---
 
