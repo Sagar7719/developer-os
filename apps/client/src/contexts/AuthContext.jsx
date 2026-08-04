@@ -23,6 +23,20 @@ export function AuthProvider({ children }) {
     };
 
     initAuth();
+
+    const handleUnauthorized = () => {
+      setUser(null);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('auth:unauthorized', handleUnauthorized);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('auth:unauthorized', handleUnauthorized);
+      }
+    };
   }, []);
 
   const login = async (credentials) => {

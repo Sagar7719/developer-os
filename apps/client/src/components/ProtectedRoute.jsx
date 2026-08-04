@@ -12,7 +12,7 @@ export function ProtectedRoute({ children }) {
   }
 
   if (!isAuthenticated || !isAdmin) {
-    return <Navigate to="/admin/login" state={{ from: location }} replace />;
+    return <Navigate to="/admin/login?expired=1" state={{ from: location }} replace />;
   }
 
   return children;

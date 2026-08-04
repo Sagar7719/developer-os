@@ -104,13 +104,8 @@ apiClient.interceptors.response.use(
             processQueue(refreshError, null);
             setAccessToken(null);
 
-            // Redirect to admin login page on refresh failure if currently in admin portal
-            if (
-              typeof window !== 'undefined' &&
-              window.location.pathname.startsWith('/admin') &&
-              !window.location.pathname.includes('/admin/login')
-            ) {
-              window.location.href = '/admin/login?expired=1';
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('auth:unauthorized'));
             }
 
             reject(refreshError);
