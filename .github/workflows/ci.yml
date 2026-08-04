@@ -21,9 +21,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 10
 
       - name: Setup Node.js 22.x
         uses: actions/setup-node@v4
@@ -40,12 +40,20 @@ jobs:
       - name: 3. Type Check (Future-Ready Placeholder)
         run: |
           echo "Executing Type Check Stage..."
-          if grep -q '"typecheck":' package.json; then pnpm run typecheck; else echo "No typecheck script defined. Skipping type check stage."; fi
+          if grep -q '"typecheck":' package.json; then
+            pnpm run typecheck
+          else
+            echo "No typecheck script defined. Skipping type check stage."
+          fi
 
       - name: 4. Future Tests (Future-Ready Placeholder)
         run: |
           echo "Executing Test Suite Stage..."
-          if grep -q '"test":' package.json; then pnpm run test; else echo "No test script defined. Skipping automated test stage."; fi
+          if grep -q '"test":' package.json; then
+            pnpm run test
+          else
+            echo "No test script defined. Skipping automated test stage."
+          fi
 
       - name: 5. Production Build
         run: pnpm run build
