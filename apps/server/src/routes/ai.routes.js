@@ -4,7 +4,7 @@ import { authenticate } from '../middleware/auth.middleware.js';
 import { authorize } from '../middleware/role.middleware.js';
 import { Roles } from '../constants/roles.js';
 import { aiRateLimiterMiddleware } from '../middleware/security.middleware.js';
-import { validate } from '../middleware/validate.middleware.js';
+import { validateRequest } from '../middleware/validate.middleware.js';
 import { generateAIValidation, getAILogsValidation } from '../validators/ai.validator.js';
 
 const router = Router();
@@ -21,7 +21,7 @@ router.post(
   authorize(Roles.ADMIN),
   aiRateLimiterMiddleware,
   generateAIValidation,
-  validate,
+  validateRequest,
   aiController.generateCompletion.bind(aiController)
 );
 
@@ -31,7 +31,7 @@ router.post(
   authorize(Roles.ADMIN),
   aiRateLimiterMiddleware,
   generateAIValidation,
-  validate,
+  validateRequest,
   aiController.generateStream.bind(aiController)
 );
 
@@ -40,7 +40,7 @@ router.get(
   authenticate,
   authorize(Roles.ADMIN),
   getAILogsValidation,
-  validate,
+  validateRequest,
   aiController.getLogs.bind(aiController)
 );
 
