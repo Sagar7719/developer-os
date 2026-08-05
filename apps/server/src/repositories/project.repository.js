@@ -5,28 +5,66 @@ import { Project } from '../models/project.model.js';
  */
 export class ProjectRepository {
   /**
-   * Find all non-deleted projects with optional filtering options.
+   * Find projects with filtering, search, status, and featured priority sorting.
    * @param {Object} options
    * @param {string} [options.category]
    * @param {boolean} [options.featured]
-   * @param {boolean} [options.isPublished=true]
+   * @param {boolean} [options.isFeatured]
+   * @param {boolean} [options.isPublished]
+   * @param {string} [options.status]
+   * @param {string} [options.search]
+   * @param {boolean} [options.includeDeleted=false]
    * @param {number} [options.limit]
    * @returns {Promise<import('mongoose').Document[]>}
    */
-  async findAll({ category, featured, isPublished = true, limit } = {}) {
-    const filter = { isDeleted: false };
+  async findAll({
+    category,
+    featured,
+    isFeatured,
+    isPublished,
+    status,
+    search,
+    includeDeleted = false,
+    limit,
+  } = {}) {
+    const filter = {};
 
-    if (isPublished !== undefined && isPublished !== null) {
+    if (includeDeleted) {
+      if (status === 'deleted') {
+        filter.isDeleted = true;
+      }
+    } else {
+      filter.isDeleted = false;
+    }
+
+    if (status === 'published') {
+      filter.$or = [{ status: 'published' }, { isPublished: true }];
+    } else if (status === 'draft') {
+      filter.$or = [{ status: 'draft' }, { isPublished: false, status: { $ne: 'archived' } }];
+    } else if (status && status !== 'deleted' && status !== 'all') {
+      filter.status = status;
+    } else if (isPublished !== undefined && isPublished !== null) {
       filter.isPublished = isPublished;
     }
+
+
     if (category) {
       filter.category = category;
     }
-    if (featured !== undefined && featured !== null) {
-      filter.featured = featured;
+
+    const featuredFlag = isFeatured !== undefined ? isFeatured : featured;
+    if (featuredFlag !== undefined && featuredFlag !== null) {
+      filter.$or = [{ isFeatured: featuredFlag }, { featured: featuredFlag }];
     }
 
-    const query = Project.find(filter).sort({ order: 1, createdAt: -1 });
+    if (search && search.trim()) {
+      filter.$text = { $search: search.trim() };
+    }
+
+    const query = Project.find(filter)
+      .populate('coverImageMediaId')
+      .populate('gallery.mediaId')
+      .sort({ isFeatured: -1, order: 1, createdAt: -1 });
 
     if (limit && typeof limit === 'number' && limit > 0) {
       query.limit(limit);
@@ -41,16 +79,27 @@ export class ProjectRepository {
    * @returns {Promise<import('mongoose').Document|null>}
    */
   async findBySlug(slug) {
-    return Project.findOne({ slug: slug.trim().toLowerCase(), isDeleted: false }).exec();
+    return Project.findOne({ slug: slug.trim().toLowerCase(), isDeleted: false })
+      .populate('coverImageMediaId')
+      .populate('gallery.mediaId')
+      .exec();
   }
 
   /**
    * Find project by ID.
    * @param {string} id
+   * @param {boolean} [includeDeleted=false]
    * @returns {Promise<import('mongoose').Document|null>}
    */
-  async findById(id) {
-    return Project.findOne({ _id: id, isDeleted: false }).exec();
+  async findById(id, includeDeleted = false) {
+    const filter = { _id: id };
+    if (!includeDeleted) {
+      filter.isDeleted = false;
+    }
+    return Project.findOne(filter)
+      .populate('coverImageMediaId')
+      .populate('gallery.mediaId')
+      .exec();
   }
 
   /**
@@ -74,7 +123,10 @@ export class ProjectRepository {
       { _id: id, isDeleted: false },
       { $set: updateData },
       { new: true, runValidators: true }
-    ).exec();
+    )
+      .populate('coverImageMediaId')
+      .populate('gallery.mediaId')
+      .exec();
   }
 
   /**
@@ -86,11 +138,44 @@ export class ProjectRepository {
   async softDeleteById(id, userId) {
     return Project.findOneAndUpdate(
       { _id: id, isDeleted: false },
-      { $set: { isDeleted: true, updatedBy: userId } },
+      { $set: { isDeleted: true, deletedAt: new Date(), updatedBy: userId } },
       { new: true }
     ).exec();
+  }
+
+  /**
+   * Restore soft-deleted project by ID.
+   * @param {string} id
+   * @param {string} userId
+   * @returns {Promise<import('mongoose').Document|null>}
+   */
+  async restoreById(id, userId) {
+    return Project.findOneAndUpdate(
+      { _id: id, isDeleted: true },
+      { $set: { isDeleted: false, deletedAt: null, updatedBy: userId } },
+      { new: true }
+    )
+      .populate('coverImageMediaId')
+      .populate('gallery.mediaId')
+      .exec();
+  }
+
+  /**
+   * Bulk reorder projects.
+   * @param {Array<{id: string, order: number}>} items
+   * @returns {Promise<void>}
+   */
+  async reorderProjects(items) {
+    const bulkOps = items.map((item) => ({
+      updateOne: {
+        filter: { _id: item.id },
+        update: { $set: { order: item.order } },
+      },
+    }));
+    await Project.bulkWrite(bulkOps);
   }
 }
 
 export const projectRepository = new ProjectRepository();
 export default projectRepository;
+

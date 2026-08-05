@@ -6,6 +6,7 @@ import {
   projectIdValidation,
   createProjectValidation,
   updateProjectValidation,
+  reorderProjectsValidation,
 } from '../validators/project.validator.js';
 import { validateRequest } from '../middleware/validate.middleware.js';
 import { authenticate } from '../middleware/auth.middleware.js';
@@ -22,7 +23,16 @@ const router = Router();
 router.get('/', projectQueryValidation, validateRequest, projectController.getProjects);
 router.get('/:slug', projectSlugValidation, validateRequest, projectController.getProjectBySlug);
 
-// Protected Admin CRUD Endpoints
+// Protected Admin Management Endpoints
+router.get(
+  '/admin/all',
+  authenticate,
+  authorize(Roles.ADMIN),
+  projectQueryValidation,
+  validateRequest,
+  projectController.getAdminProjects
+);
+
 router.post(
   '/',
   authenticate,
@@ -33,12 +43,48 @@ router.post(
 );
 
 router.put(
+  '/reorder',
+  authenticate,
+  authorize(Roles.ADMIN),
+  reorderProjectsValidation,
+  validateRequest,
+  projectController.reorderProjects
+);
+
+router.put(
   '/:id',
   authenticate,
   authorize(Roles.ADMIN),
   updateProjectValidation,
   validateRequest,
   projectController.updateProject
+);
+
+router.patch(
+  '/:id/status',
+  authenticate,
+  authorize(Roles.ADMIN),
+  projectIdValidation,
+  validateRequest,
+  projectController.updateProjectStatus
+);
+
+router.patch(
+  '/:id/featured',
+  authenticate,
+  authorize(Roles.ADMIN),
+  projectIdValidation,
+  validateRequest,
+  projectController.updateProjectFeatured
+);
+
+router.patch(
+  '/:id/restore',
+  authenticate,
+  authorize(Roles.ADMIN),
+  projectIdValidation,
+  validateRequest,
+  projectController.restoreProject
 );
 
 router.delete(
@@ -51,3 +97,4 @@ router.delete(
 );
 
 export default router;
+

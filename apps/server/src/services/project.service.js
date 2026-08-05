@@ -12,7 +12,7 @@ import { logger } from '../config/logger.js';
 export class ProjectService {
   /**
    * Get list of projects matching filter options.
-   * @param {Object} queryOptions - { category, featured, isPublished, limit }
+   * @param {Object} queryOptions
    * @returns {Promise<ProjectDTO[]>}
    */
   async getProjects(queryOptions = {}) {
@@ -60,6 +60,10 @@ export class ProjectService {
       throw new ApiError(HttpStatus.CONFLICT, 'A project with this title/slug already exists.');
     }
 
+    if (projectData.isFeatured !== undefined) {
+      projectData.featured = Boolean(projectData.isFeatured);
+    }
+
     const newProject = await projectRepository.create({
       ...projectData,
       slug: generatedSlug,
@@ -95,6 +99,20 @@ export class ProjectService {
       }
     }
 
+    if (updateData.isFeatured !== undefined) {
+      updateData.featured = Boolean(updateData.isFeatured);
+    }
+
+    if (updateData.status !== undefined) {
+      updateData.isPublished = updateData.status === 'published';
+      if (updateData.status === 'published' && !existing.publishedAt) {
+        updateData.publishedAt = new Date();
+      }
+    } else if (updateData.isPublished !== undefined) {
+      updateData.status = updateData.isPublished ? 'published' : 'draft';
+    }
+
+
     const updated = await projectRepository.updateById(id, {
       ...updateData,
       updatedBy: userId,
@@ -119,7 +137,39 @@ export class ProjectService {
     await projectRepository.softDeleteById(id, userId);
     logger.info('[Audit] Project soft-deleted successfully', { projectId: id, userId });
   }
+
+  /**
+   * Restore a soft-deleted project.
+   * @param {string} id
+   * @param {string} userId
+   * @returns {Promise<ProjectDTO>}
+   */
+  async restoreProject(id, userId) {
+    const existing = await projectRepository.findById(id, true);
+    if (!existing) {
+      throw new ApiError(HttpStatus.NOT_FOUND, ResponseMessages.NOT_FOUND);
+    }
+    if (!existing.isDeleted) {
+      throw new ApiError(HttpStatus.BAD_REQUEST, 'Project is not deleted.');
+    }
+
+    const restored = await projectRepository.restoreById(id, userId);
+    logger.info('[Audit] Project restored successfully', { projectId: id, userId });
+    return ProjectDTO.from(restored);
+  }
+
+  /**
+   * Bulk reorder projects.
+   * @param {Array<{id: string, order: number}>} items
+   * @param {string} userId
+   * @returns {Promise<void>}
+   */
+  async reorderProjects(items, userId) {
+    await projectRepository.reorderProjects(items);
+    logger.info('[Audit] Projects bulk reordered', { itemCount: items.length, userId });
+  }
 }
 
 export const projectService = new ProjectService();
 export default projectService;
+

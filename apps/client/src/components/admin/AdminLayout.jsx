@@ -52,7 +52,7 @@ export function AdminLayout() {
             </div>
             <div>
               <div className="text-sm font-bold text-white tracking-tight">Admin CMS</div>
-              <div className="text-[10px] font-mono text-purple-400">Developer OS v1.2.0</div>
+              <div className="text-[10px] font-mono text-purple-400">Developer OS v1.4.1</div>
             </div>
           </div>
 
@@ -66,10 +66,9 @@ export function AdminLayout() {
                   to={item.path}
                   end={item.end}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                      isActive
-                        ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30 font-semibold'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${isActive
+                      ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30 font-semibold'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                     }`
                   }
                 >
