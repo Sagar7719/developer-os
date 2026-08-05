@@ -14,7 +14,9 @@ import {
   FiShield,
   FiZap,
   FiActivity,
+  FiImage,
 } from 'react-icons/fi';
+
 
 export function AdminLayout() {
   const { user, logout } = useAuth();
@@ -28,7 +30,9 @@ export function AdminLayout() {
 
   const navItems = [
     { label: 'Dashboard', path: '/admin', icon: FiGrid, end: true },
+    { label: 'Media Library', path: '/admin/media', icon: FiImage },
     { label: 'Projects CMS', path: '/admin/projects', icon: FiFolder },
+
     { label: 'Skills CMS', path: '/admin/skills', icon: FiCpu },
     { label: 'Experience CMS', path: '/admin/experience', icon: FiBriefcase },
     { label: 'Messages Inbox', path: '/admin/messages', icon: FiMail },
