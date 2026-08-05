@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FiGlobe, FiImage, FiAlertCircle } from 'react-icons/fi';
 import { MediaPickerModal } from '../media/MediaPickerModal.jsx';
-import { FiGlobe, FiImage } from 'react-icons/fi';
 
-export function ProjectSEOForm({ seoData, onChange }) {
-  const [isMediaPickerOpen, setIsMediaPickerOpen] = React.useState(false);
+export function ProjectSEOForm({ seoData, onChange, errors = {} }) {
+  const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
 
   const handleChange = (field, value) => {
     onChange({
@@ -15,6 +15,9 @@ export function ProjectSEOForm({ seoData, onChange }) {
   const handleSelectOgImage = (media) => {
     handleChange('ogImage', media.secureUrl || media.url);
   };
+
+  const canonicalUrlError = errors['seo.canonicalUrl'];
+
 
   return (
     <div className="space-y-4 text-xs">
@@ -84,13 +87,25 @@ export function ProjectSEOForm({ seoData, onChange }) {
       <div className="space-y-1">
         <label className="font-mono text-slate-300">Canonical URL</label>
         <input
+          id="field-canonicalUrl"
           type="url"
           value={seoData?.canonicalUrl || ''}
           onChange={(e) => handleChange('canonicalUrl', e.target.value)}
           placeholder="https://sagar.dev/projects/example"
-          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-purple-500 font-sans"
+          className={`w-full bg-slate-900 border rounded-xl px-3 py-2 text-slate-200 focus:outline-none font-sans transition-colors ${
+            canonicalUrlError
+              ? 'border-red-500/80 bg-red-950/20 text-red-200 focus:border-red-500'
+              : 'border-slate-800 focus:border-purple-500'
+          }`}
         />
+        {canonicalUrlError && (
+          <span className="text-[11px] text-red-400 font-mono mt-1 flex items-center gap-1">
+            <FiAlertCircle className="w-3 h-3 shrink-0" />
+            {canonicalUrlError}
+          </span>
+        )}
       </div>
+
 
       <div className="space-y-1">
         <label className="font-mono text-slate-300">OpenGraph Preview Image URL</label>

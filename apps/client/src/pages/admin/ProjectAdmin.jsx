@@ -32,6 +32,8 @@ import {
   FiFigma,
 } from 'react-icons/fi';
 
+import { MediaToast } from '../../components/media/MediaToast.jsx';
+
 export function ProjectAdmin() {
   const queryClient = useQueryClient();
 
@@ -41,6 +43,11 @@ export function ProjectAdmin() {
   const [isReorderOpen, setIsReorderOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (type, text) => {
+    setToastMessage({ type, text, id: Date.now() });
+  };
 
   const {
     data: projects,
@@ -63,6 +70,7 @@ export function ProjectAdmin() {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setIsFormOpen(false);
+      showToast('success', 'Project created successfully.');
     },
   });
 
@@ -73,6 +81,7 @@ export function ProjectAdmin() {
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setIsFormOpen(false);
       setSelectedProject(null);
+      showToast('success', 'Project updated successfully.');
     },
   });
 
@@ -104,6 +113,7 @@ export function ProjectAdmin() {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setDeleteTarget(null);
+      showToast('success', 'Project moved to Trash.');
     },
   });
 
@@ -112,8 +122,10 @@ export function ProjectAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      showToast('success', 'Project restored successfully.');
     },
   });
+
 
   const handleCreate = () => {
     setSelectedProject(null);
@@ -294,26 +306,33 @@ export function ProjectAdmin() {
 
                     {/* Tech Stack */}
                     <td className="py-3.5 px-4">
-                      <div className="flex flex-wrap items-center gap-1 max-w-xs">
-                        {project.techStack?.slice(0, 3).map((tech, index) => (
-                          <span
-                            key={index}
-                            className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-900 text-slate-400 border border-slate-800"
-                          >
-                            {tech}
-                          </span>
-                        ))}
+                      {project.techStack && project.techStack.length > 0 ? (
 
-                        {project.techStack?.length > 3 && (
-                          <span
-                            title={project.techStack.slice(3).join(', ')}
-                            className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-purple-600/10 text-purple-300 border border-purple-500/20"
-                          >
-                            +{project.techStack.length - 3}
-                          </span>
-                        )}
-                      </div>
+
+                        <div className="flex flex-wrap items-center gap-1 max-w-xs">
+                          {project.techStack.slice(0, 3).map((tech, index) => (
+                            <span
+                              key={index}
+                              className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-900 text-slate-400 border border-slate-800"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+
+                          {project.techStack.length > 3 && (
+                            <span
+                              title={`+${project.techStack.length - 3} more: ${project.techStack.slice(3).join(', ')}`}
+                              className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-purple-600/10 text-purple-300 border border-purple-500/20 font-semibold cursor-help"
+                            >
+                              +{project.techStack.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-slate-600 font-mono text-[10px]">—</span>
+                      )}
                     </td>
+
 
                     {/* Tri-Links */}
                     <td className="py-3.5 px-4">
@@ -475,8 +494,12 @@ export function ProjectAdmin() {
         onCancel={() => setDeleteTarget(null)}
         isDeleting={deleteMutation.isPending}
       />
+
+      {/* Success Notification Toast */}
+      <MediaToast message={toastMessage} onClose={() => setToastMessage(null)} />
     </div>
   );
 }
+
 
 export default ProjectAdmin;
